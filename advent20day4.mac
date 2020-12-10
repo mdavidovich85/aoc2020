@@ -1,0 +1,107 @@
+  K
+  // load file input into arrary
+  S fileInput = ##class(%IO.FileStream).%New()
+  S file="C:\Users\d9728\Documents\aoc20input\day4.txt"
+  D fileInput.Open(file)
+  S passport=1,line=1
+  F  {
+	S input=fileInput.ReadLine()
+	Q:fileInput.AtEnd
+	S:input="" passport=passport+1,line=1
+	I input'="" {
+	S INPUT(passport,line)=input
+	S line=line+1
+	}
+  }
+  D fileInput.Close(file)
+  
+  // find passports will all feilds except 'cid'
+  S passPort="",validCount=0
+  F  {
+	  S totalKeys=0
+	  S passPort=$O(INPUT(passPort))
+	  Q:passPort=""
+	  S line=""
+	  F  {
+		  S line=$O(INPUT(passPort,line))
+		  Q:line=""
+		  F field=1:1:$L(INPUT(passPort,line)," ") {
+			  S key=$E($P(INPUT(passPort,line)," ",field),1,3)
+			  S:key'="cid" totalKeys=totalKeys+1
+		  }
+	  }
+	  // add to total and add valid passport to array
+	  S:totalKeys=7 validCount=validCount+1,validPassport(passPort)=""
+  }
+  
+  W !,"Valid passport count (round 1): "_validCount,!
+
+  // set up index of valid eye colors
+  S EYES("amb")=""
+  S EYES("blu")=""
+  S EYES("brn")=""
+  S EYES("gry")=""
+  S EYES("grn")=""
+  S EYES("hzl")=""
+  S EYES("oth")=""
+  B
+  // data validation of valid passports
+  S passPort="",validCount=0
+  F  {
+	  // assume valid until proven otherwise
+	  S passPort=$O(validPassport(passPort))
+	  S valid=1
+	  Q:passPort=""
+	  S line=""
+	  F  {
+		  S line=$O(INPUT(passPort,line))
+		  Q:line=""
+		  F field=1:1:$L(INPUT(passPort,line)," ") {
+			  S key=$E($P(INPUT(passPort,line)," ",field),1,3)
+			  S value=$P($P(INPUT(passPort,line)," ",field),":",2)
+			  
+			  I ((key="cid")&(valid=1)) {}
+			  I ((key="byr")&(valid=1)) {
+				  S value=+value
+				  I ((value?4N)&(value>=1920)&(value<=2002)) {} ELSE { S valid=0 }
+			  }
+			  I ((key="iyr")&(valid=1)) {
+				  S value=+value
+				  I ((value?4N)&(value>=2010)&(value<=2020)) {} ELSE { S valid=0 }
+			  }
+			  I ((key="eyr")&(valid=1)) {
+				  S value=+value
+				  I ((value?4N)&(value>=2020)&(value<=2030)) {} ELSE { S valid=0 }
+			  }
+			  I ((key="hgt")&(valid=1)) {
+				  I ((value?.N1"cm")!(value?.N1"in")) {
+					  s unit=$E(value,$L(value)-1,$L(value))		  
+					  I unit="cm" {
+						  I (($E(value,1,$L(value)-2)>=150)&($E(value,1,$L(value)-2)<=193)) {} ELSE { S valid=0 }
+					  }
+					  I unit="in" {
+						  I (($E(value,1,$L(value)-2)>=59)&($E(value,1,$L(value)-2)<=76)) {} ELSE { S valid=0 }
+					  }
+				  }
+			  }
+			  I ((key="hcl")&(valid=1)) {				  
+				  I (($E(value,1)="#")&($L(value=7))) {
+					  S code=$E(value,2,7)
+					  S code=$TR(code,"0123456789","1111111111")
+					  S code=$TR(code,"abcdef","111111")
+					  I code?6"1" {s code=1} else {s code=0}
+					  I code=1 {} ELSE { S valid=0 }
+				  } ELSE { S valid=0 }
+			  }
+			  I ((key="ecl")&(valid=1)) {
+				  I $D(EYES(value)) {} ELSE { S valid=0 }
+			  }
+			  I ((key="pid")&(valid=1)) {
+				  I (value?9N) { } ELSE { S valid=0 }
+			  }
+		  }
+	  }
+	  S:valid=1 validCount=validCount+1
+  }
+  
+  W !,"Valid passport count (round 2): "_validCount,!

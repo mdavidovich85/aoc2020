@@ -1,0 +1,61 @@
+  K
+  S fileInput = ##class(%IO.FileStream).%New()
+  S file="C:\Users\d9728\Documents\aoc20input\day2.txt"
+  D fileInput.Open(file)
+  S passwordNo=1
+  F  {
+	S input=fileInput.ReadLine()
+	Q:input=""
+	S INPUT(passwordNo)=input
+	S passwordNo=passwordNo+1
+  }
+  D fileInput.Close(file)
+  
+  s correctCount=0,passwordNo=""
+  F  {
+	  S passwordNo=$O(INPUT(passwordNo))
+	  Q:passwordNo=""
+	  S password=$TR($P(INPUT(passwordNo),":",2)," ","")
+	  S policy=$P(INPUT(passwordNo),":",1)
+	  s range=$P(policy," ",1)
+	  s charCheck=$P(policy," ",2)
+	  s low=$P(range,"-",1)
+	  s high=$P(range,"-",2)
+	  
+	  s charCount=0
+	  F char=1:1:$L(password) {
+		  I $E(password,char)=charCheck {
+			  s charCount=charCount+1
+		  }
+	  }
+	  
+	  I (charCount>=low)&(charCount<=high) {
+		  s correctCount=correctCount+1
+	  }
+  }
+  
+  w "Correct passwords (part 1): "_correctCount,!
+  
+  s correctCount=0,passwordNo=""
+  F  {
+	  S passwordNo=$O(INPUT(passwordNo))
+	  Q:passwordNo=""
+	  S password=$TR($P(INPUT(passwordNo),":",2)," ","")
+	  S policy=$P(INPUT(passwordNo),":",1)
+	  s range=$P(policy," ",1)
+	  s charCheck=$P(policy," ",2)
+	  s pos1=$P(range,"-",1)
+	  s pos2=$P(range,"-",2)
+	  
+	  I $E(password,pos1)=charCheck {
+		  I $E(password,pos2)'=charCheck {
+			  s correctCount=correctCount+1
+		  }
+	  } ELSE {
+		  I $E(password,pos2)=charCheck {
+			  s correctCount=correctCount+1
+		  }
+	  }
+  }
+  
+  w "Correct passwords (part 2): "_correctCount

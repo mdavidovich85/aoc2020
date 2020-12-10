@@ -1,0 +1,59 @@
+  K
+  S fileInput = ##class(%IO.FileStream).%New()
+  S file="C:\Users\d9728\Documents\aoc20input\day1.txt"
+  D fileInput.Open(file)
+  S transNo=1
+  F  {
+	S input=fileInput.ReadLine()
+	Q:input=""
+	S INPUT(transNo)=input
+	S transNo=transNo+1
+  }
+  D fileInput.Close(file)
+  
+  S transNo="",done=""
+  F  {
+	  S transNo=$O(INPUT(transNo))
+	  Q:transNo=""
+	  S input1=INPUT(transNo)
+	  S transNo2=""
+	  F  {
+		  S transNo2=$O(INPUT(transNo2))
+		  Q:transNo2=""!(done)
+		  I transNo2'=transNo {
+			  S input2=INPUT(transNo2)
+			  I input1+input2=2020 {
+				  W input1," + ",input2," = ",input1+input2,!
+				  W input1," * ",input2," = ",input1*input2,!
+				  S done=1
+				  }
+		  }
+	  }
+  } 
+ S transNo="",done=""
+  F  {
+	  S transNo=$O(INPUT(transNo))
+	  Q:transNo=""
+	  S input1=INPUT(transNo)
+	  S transNo2=""
+	  F  {
+		  S transNo2=$O(INPUT(transNo2))
+		  Q:transNo2=""!(done)
+		  S input2=INPUT(transNo2)
+		  I transNo2'=transNo {
+			  S transNo3=""
+	  		  F  {
+		  		S transNo3=$O(INPUT(transNo3))
+		  		Q:transNo3=""!(done)
+		        I (transNo2'=transNo3)&(transNo'=transNo3) {
+			      S input3=INPUT(transNo3)
+			  	  I input1+input2+input3=2020 {
+				    W input1," + ",input2," + ",input3," = ",input1+input2+input3,!
+				    W input1," * ",input2," * ",input3," = ",input1*input2*input3,!
+				    S done=1
+				  }
+		        }
+		  }
+	  }
+	}
+  }

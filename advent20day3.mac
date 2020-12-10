@@ -1,0 +1,44 @@
+  K
+  S fileInput = ##class(%IO.FileStream).%New()
+  S file="C:\Users\d9728\Documents\aoc20input\day3.txt"
+  D fileInput.Open(file)
+  S line=1
+  F  {
+	S input=fileInput.ReadLine()
+	Q:input=""
+	S INPUT(line)=input
+	S line=line+1
+  }
+  D fileInput.Close(file)
+  
+  S RUN(1)="1,1"
+  S RUN(2)="3,1"
+  S RUN(3)="5,1"
+  S RUN(4)="7,1"
+  S RUN(5)="1,2"
+  
+  S RUNNO="",treeProd=1
+  F  {
+	  S RUNNO=$O(RUN(RUNNO))
+	  Q:RUNNO=""
+	  S row=1
+	  S col=1
+	  S right=$P(RUN(RUNNO),",",1)
+	  S down=$P(RUN(RUNNO),",",2)
+	  S treeCount=0
+	  F  {
+		  Q:'$D(INPUT(row))
+		  S space=$E(INPUT(row),col#$L(INPUT(row)))
+		  S:col#$L(INPUT(row))=0 space=$E(INPUT(row),$L(INPUT(row)))
+		  I space="#" {
+			  S treeCount=treeCount+1
+		  }
+		  S col=col+right
+		  S row=row+down
+	  }
+	 W !,"Trees encountered ("_RUNNO_"): "_treeCount,!
+	 S treeProd=treeProd*treeCount
+  }
+  
+  W !,"Trees encountered (product): "_treeProd,!
+
