@@ -44,7 +44,7 @@
   S EYES("grn")=""
   S EYES("hzl")=""
   S EYES("oth")=""
-  B
+  
   // data validation of valid passports
   S passPort="",validCount=0
   F  {
