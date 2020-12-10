@@ -82,10 +82,10 @@
 					  I unit="in" {
 						  I (($E(value,1,$L(value)-2)>=59)&($E(value,1,$L(value)-2)<=76)) {} ELSE { S valid=0 }
 					  }
-				  }
+				  } ELSE { S valid=0 }
 			  }
 			  I ((key="hcl")&(valid=1)) {				  
-				  I (($E(value,1)="#")&($L(value=7))) {
+				  I (($E(value,1)="#")&($L(value)=7)) {
 					  S code=$E(value,2,7)
 					  S code=$TR(code,"0123456789","1111111111")
 					  S code=$TR(code,"abcdef","111111")
@@ -97,7 +97,7 @@
 				  I $D(EYES(value)) {} ELSE { S valid=0 }
 			  }
 			  I ((key="pid")&(valid=1)) {
-				  I (value?9N) { } ELSE { S valid=0 }
+				  I (value?9N) {} ELSE { S valid=0 }
 			  }
 		  }
 	  }
