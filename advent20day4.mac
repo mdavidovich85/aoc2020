@@ -4,9 +4,9 @@
   S file="C:\Users\d9728\Documents\aoc20input\day4.txt"
   D fileInput.Open(file)
   S passport=1,line=1
-  F  {
+  F  {	
+    Q:fileInput.AtEnd
 	S input=fileInput.ReadLine()
-	Q:fileInput.AtEnd
 	S:input="" passport=passport+1,line=1
 	I input'="" {
 	S INPUT(passport,line)=input

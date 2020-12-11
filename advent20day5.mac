@@ -1,0 +1,68 @@
+  K
+  // load file input into arrary
+  S fileInput = ##class(%IO.FileStream).%New()
+  S file="C:\Users\d9728\Documents\aoc20input\day5.txt"
+  D fileInput.Open(file)
+  S pass=1
+  F  {
+	S input=fileInput.ReadLine()
+	Q:fileInput.AtEnd
+	S passes(pass)=input
+	S pass=pass+1
+  }
+  D fileInput.Close(file)
+  
+  S pass="",col=8
+  F  {
+	  S pass=$O(passes(pass))
+	  Q:pass=""
+	  // get row
+	  S rowKey=passes(pass)
+	  S rowKey=$E(rowKey,1,7)
+	  s maxRow=127
+	  s minRow=0
+	  F sortKey=1:1:6 {
+		S sort=$E(rowKey,sortKey)
+		I sort="F" {
+			S maxRow=$SYSTEM.SQL.FLOOR((maxRow+minRow)/2)
+			//W minRow," ",maxRow,!
+		} ELSE {
+			s minRow=$SYSTEM.SQL.CEILING((maxRow+minRow)/2)
+			//W minRow," ",maxRow,!
+		}  
+	  }
+	  I ($E(rowKey,7)="B")&(maxRow>minRow) { S row=maxRow } ELSE {S row=minRow}
+	  I ($E(rowKey,7)="F")&(maxRow>minRow) { S row=minRow } ELSE {S row=maxRow}
+
+	  // get column
+	  s colKey=passes(pass)
+	  s colKey=$E(colKey,8,10)
+	  s maxCol=7
+	  s minCol=0
+	  F sortKey=1:1:2 {
+		S sort=$E(colKey,sortKey)
+		I sort="L" {
+			S maxCol=$SYSTEM.SQL.FLOOR((maxCol+minCol)/2)
+			//W minCol," ",maxCol,!
+		} ELSE {
+			s minCol=$SYSTEM.SQL.CEILING((maxCol+minCol)/2)
+			//W minCol," ",maxCol,!
+		}  
+	  }
+	  I ($E(colKey,3)="R")&(maxCol>minCol) { S col=maxCol } ELSE {S col=minCol}
+	  I ($E(colKey,3)="L")&(maxCol>minCol) { S col=minCol } ELSE {S col=maxCol}
+	  
+	  S seatId=(row*8)+col
+	  S seats(seatId,pass)=""
+	
+  }
+  
+  W "Highest seatID: "_$O(seats(""),-1)
+  
+  S seat="",match=0
+  F  {
+	  Q:match=1
+	  S seat=$O(seats(seat))
+	  I $O(seats(seat))-seat=2 S match=1
+  }
+  W !,"My seatID: "_(seat+1)
