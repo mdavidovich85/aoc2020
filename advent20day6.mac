@@ -1,0 +1,90 @@
+  K
+  // load file input into arrary
+  S fileInput = ##class(%IO.FileStream).%New()
+  S file="C:\Users\d9728\Documents\aoc20input\day6.txt"
+  D fileInput.Open(file)
+  s group=1,answer=1
+  F  {	
+    Q:fileInput.AtEnd
+	S input=fileInput.ReadLine()
+	S:input="" group=group+1,line=1
+	I input'="" {
+	S inputs(group,answer)=input
+	S answer=answer+1
+	}
+  }
+  D fileInput.Close(file)
+  
+  s group=""
+  F  {
+	  S group=$O(inputs(group))
+	  Q:group=""
+	  k yeses
+	  S answer=""
+	  F  {
+		  S answer=$O(inputs(group,answer))
+		  Q:answer=""
+		  F question=1:1:$L(inputs(group,answer)) {
+			  s yes=$E(inputs(group,answer),question)
+			  s yeses(yes)=""
+		  }
+	  }
+	  s yes="",count=0
+	  f  {
+		  s yes=$O(yeses(yes))
+		  q:yes=""
+		  s count=count+1
+	  }
+	  s inputs(group)=count
+	  k yeses
+  }
+  
+  s group="",sum=0
+  f  {
+	  s group=$O(inputs(group))
+	  Q:group=""
+	  s sum=sum+inputs(group)
+  }
+  
+  W "Sum of yes per group: "_sum
+  
+  s group=""
+  F  {
+	  S group=$O(inputs(group))
+	  Q:group=""
+	  k yeses
+	  S person=""
+	  F  {
+		  S person=$O(inputs(group,person))
+		  Q:person=""
+		  F question=1:1:$L(inputs(group,person)) {
+			  s yes=$E(inputs(group,person),question)
+			  s yeses(yes)=""
+		  }
+	  }
+	    
+	  s yes="",count=0
+	  f  {
+		  s yes=$O(yeses(yes))
+		  q:yes=""
+		  S person=""
+		  s all=1
+		  F  {
+			  S person=$O(inputs(group,person))
+		  	  Q:person=""
+		  	  I inputs(group,person)'[yes set all=0
+		  }
+		  if all=1 s count=count+1
+	  }
+	  s inputs(group)=count
+	  k yeses
+  }
+  
+  s group="",sum=0
+  f  {
+	  s group=$O(inputs(group))
+	  Q:group=""
+	  s sum=sum+inputs(group)
+  }
+  
+  W !,"Sum of yes per group: "_sum
